@@ -12,10 +12,7 @@
 <style>
 body { font-family: 'Montserrat', sans-serif; background-color: #080808; color: white; }
 
-.prosff-card {
-    background: #121212;
-    border: 1px solid #222;
-}
+.prosff-card { background: #121212; border: 1px solid #222; }
 
 .gold-text { color: #ffcc00; }
 .green-text { color: #00ff88; }
@@ -36,13 +33,20 @@ input[type=range] { accent-color: #00ff88; }
 
 <header class="text-center my-8">
 <h1 class="text-4xl font-black gold-text">ProSFF</h1>
+
 <p class="text-xs text-gray-500 uppercase mt-2">
 Simulador de construção por células
+</p>
+
+<p class="text-[10px] text-gray-600 mt-1 uppercase">
+1 consumidor duplicando para 3 consumidores
 </p>
 </header>
 
 <div class="prosff-card rounded-3xl p-4 mb-6 text-center border-dashed border-green-500/30">
-<span class="text-[10px] text-gray-500 uppercase block mb-1">Consumo base mensal</span>
+<span class="text-[10px] text-gray-500 uppercase block mb-1">
+Consumo mínimo mensal
+</span>
 <span class="text-2xl font-black green-text">R$ 300</span>
 </div>
 
@@ -56,13 +60,23 @@ No ProSFF o crescimento acontece por duplicação de consumidores.<br><br>
 <div class="prosff-card rounded-3xl p-6 mb-6">
 
 <label class="block text-[10px] text-gray-500 uppercase mb-4 text-center">
-Ritmo de construção
+Simule o ritmo do seu negócio
 </label>
 
 <div class="grid grid-cols-3 gap-2 mb-6">
-<button onclick="setRitmo(60,this)" class="ritmo-btn p-3 rounded-xl border border-gray-800 text-[9px] font-bold">Conservador</button>
-<button onclick="setRitmo(30,this)" class="ritmo-btn active p-3 rounded-xl border border-gray-800 text-[9px] font-bold">Moderado</button>
-<button onclick="setRitmo(15,this)" class="ritmo-btn p-3 rounded-xl border border-gray-800 text-[9px] font-bold">Acelerado</button>
+
+<button onclick="setRitmo(0.7,this)" class="ritmo-btn p-3 rounded-xl border border-gray-800 text-[9px] font-bold">
+Conservador
+</button>
+
+<button onclick="setRitmo(1,this)" class="ritmo-btn active p-3 rounded-xl border border-gray-800 text-[9px] font-bold">
+Moderado
+</button>
+
+<button onclick="setRitmo(1.3,this)" class="ritmo-btn p-3 rounded-xl border border-gray-800 text-[9px] font-bold">
+Acelerado
+</button>
+
 </div>
 
 <label class="block text-[10px] text-gray-500 uppercase mb-2 text-center">
@@ -79,13 +93,15 @@ Etapas: <span id="etapas-val" class="green-text">5</span>
 
 <script>
 
-let ritmoDias = 30;
+let ritmoMultiplicador = 1;
 const VALOR_FIXO = 300;
 
-function setRitmo(dias, btn) {
-    ritmoDias = dias;
+function setRitmo(valor, btn) {
+    ritmoMultiplicador = valor;
+
     document.querySelectorAll('.ritmo-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+
     simular();
 }
 
@@ -158,7 +174,8 @@ pinBonus = t.pin;
 }
 }
 
-let total = unilevel + pinBonus;
+// 🔥 AQUI ENTRA O RITMO (corrigido)
+let total = (unilevel + pinBonus) * ritmoMultiplicador;
 
 container.innerHTML += `
 <div class="prosff-card rounded-2xl p-5 border-l-4 ${e===etapas?'border-l-green-500':'border-l-gray-800'}">
@@ -172,7 +189,7 @@ container.innerHTML += `
 </div>
 
 <div class="text-right">
-<p class="text-[10px] text-gray-500 uppercase">Potencial</p>
+<p class="text-[10px] text-gray-500 uppercase">Renda potencial</p>
 <p class="text-lg font-black green-text">R$ ${Math.floor(total).toLocaleString('pt-BR')}</p>
 </div>
 
@@ -199,9 +216,10 @@ container.innerHTML += `
 Começar sua primeira célula
 </h3>
 
-<button class="bg-green-500 text-black font-bold px-4 py-2 rounded-xl">
+<a href="https://chat.whatsapp.com/GZyIlwRw6GlLApxkCsWW8E" target="_blank"
+class="bg-green-500 text-black font-bold px-4 py-2 rounded-xl inline-block">
 Entrar na Comunidade
-</button>
+</a>
 
 <p class="text-[10px] text-gray-600 mt-4">
 Este simulador mostra cenários de construção. O ritmo depende de cada pessoa.
