@@ -11,12 +11,9 @@
 
 <style>
 body { font-family: 'Montserrat', sans-serif; background-color: #080808; color: white; }
-
 .prosff-card { background: #121212; border: 1px solid #222; }
-
 .gold-text { color: #ffcc00; }
 .green-text { color: #00ff88; }
-
 input[type=range] { accent-color: #00ff88; }
 
 .ritmo-btn.active {
@@ -65,16 +62,16 @@ Simule o ritmo do seu negócio
 
 <div class="grid grid-cols-3 gap-2 mb-6">
 
-<button onclick="setRitmo(0.7,this)" class="ritmo-btn p-3 rounded-xl border border-gray-800 text-[9px] font-bold">
-Conservador
+<button onclick="setRitmo(60,this)" class="ritmo-btn p-3 rounded-xl border border-gray-800 text-[9px] font-bold">
+Conservador<br><span class="text-gray-500">2 meses</span>
 </button>
 
-<button onclick="setRitmo(1,this)" class="ritmo-btn active p-3 rounded-xl border border-gray-800 text-[9px] font-bold">
-Moderado
+<button onclick="setRitmo(30,this)" class="ritmo-btn active p-3 rounded-xl border border-gray-800 text-[9px] font-bold">
+Moderado<br><span class="text-gray-500">1 mês</span>
 </button>
 
-<button onclick="setRitmo(1.3,this)" class="ritmo-btn p-3 rounded-xl border border-gray-800 text-[9px] font-bold">
-Acelerado
+<button onclick="setRitmo(15,this)" class="ritmo-btn p-3 rounded-xl border border-gray-800 text-[9px] font-bold">
+Acelerado<br><span class="text-gray-500">15 dias</span>
 </button>
 
 </div>
@@ -93,15 +90,13 @@ Etapas: <span id="etapas-val" class="green-text">5</span>
 
 <script>
 
-let ritmoMultiplicador = 1;
+let ritmoDias = 30;
 const VALOR_FIXO = 300;
 
-function setRitmo(valor, btn) {
-    ritmoMultiplicador = valor;
-
+function setRitmo(dias, btn) {
+    ritmoDias = dias;
     document.querySelectorAll('.ritmo-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-
     simular();
 }
 
@@ -174,8 +169,11 @@ pinBonus = t.pin;
 }
 }
 
-// 🔥 AQUI ENTRA O RITMO (corrigido)
-let total = (unilevel + pinBonus) * ritmoMultiplicador;
+let total = unilevel + pinBonus;
+
+// 🔥 TEMPO CORRETO
+let tempoMeses = (e * ritmoDias) / 30;
+let tempoTexto = tempoMeses < 1 ? "15 dias" : tempoMeses.toFixed(1) + " meses";
 
 container.innerHTML += `
 <div class="prosff-card rounded-2xl p-5 border-l-4 ${e===etapas?'border-l-green-500':'border-l-gray-800'}">
@@ -186,6 +184,7 @@ container.innerHTML += `
 <p class="text-[10px] text-gray-500 uppercase">Etapa ${e}</p>
 <h3 class="text-sm font-bold">${rede} consumidores</h3>
 <p class="text-[10px] text-green-400">${getStatus(e)}</p>
+<p class="text-[10px] text-gray-500 mt-1">≈ ${tempoTexto}</p>
 </div>
 
 <div class="text-right">
