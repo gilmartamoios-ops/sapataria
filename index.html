@@ -210,7 +210,7 @@ ptsAnterior = ptsMensal;
 
 }
 console.log("CHEGUEI NO FINAL");
-container.innerHTML += `
+container.insertAdjacentHTML("beforeend", `
 <div class="prosff-card rounded-2xl p-6 text-center border border-green-500/30 mt-6">
 
 <p class="text-xs text-gray-400 uppercase mb-2">Próximo passo real</p>
@@ -219,18 +219,17 @@ container.innerHTML += `
 Começar sua primeira célula
 </h3>
 
-<a href="https://chat.whatsapp.com/GZyIlwRw6GlLApxkCsWW8E" target="_blank"
+<button onclick="abrirWhatsSimulador()"
 class="bg-green-500 text-black font-bold px-4 py-2 rounded-xl inline-block">
-Entrar na Comunidade
-</a>
+Quero começar minha primeira célula
+</button>
 
 <p class="text-[10px] text-gray-600 mt-4">
 Este simulador mostra cenários de construção. O ritmo depende de cada pessoa.
 </p>
 
 </div>
-`;
-
+`);
 }catch(e){
 console.log("Erro:", e);
 }
