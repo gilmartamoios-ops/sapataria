@@ -39,7 +39,6 @@ Simulador de construção por células
 1 consumidor duplicando para 3 consumidores
 </p>
 </header>
-
 <div class="prosff-card rounded-3xl p-4 mb-6 text-center border-dashed border-green-500/30">
 <span class="text-[10px] text-gray-500 uppercase block mb-1">
 Consumo mínimo mensal
@@ -87,7 +86,6 @@ Etapas: <span id="etapas-val" class="green-text">5</span>
 <div id="lista-etapas" class="space-y-4"></div>
 
 </div>
-
 <script>
 
 let ritmoDias = 30;
@@ -146,8 +144,7 @@ rede += novos;
 
 let faturamento = rede * VALOR_FIXO;
 let ptsMensal = faturamento / 3;
-
-// UNILEVEL
+    // UNILEVEL
 let unilevel = 0;
 for(let g=1; g<=e; g++){
 let perc = (g<=2)?0.05:(g===3?0.09:0.04);
@@ -219,10 +216,10 @@ container.innerHTML += `
 Começar sua primeira célula
 </h3>
 
-<a href="https://chat.whatsapp.com/GZyIlwRw6GlLApxkCsWW8E" target="_blank"
+<button onclick="abrirWhatsSimulador()"
 class="bg-green-500 text-black font-bold px-4 py-2 rounded-xl inline-block">
-Entrar na Comunidade
-</a>
+Quero começar minha primeira célula
+</button>
 
 <p class="text-[10px] text-gray-600 mt-4">
 Este simulador mostra cenários de construção. O ritmo depende de cada pessoa.
@@ -234,6 +231,14 @@ Este simulador mostra cenários de construção. O ritmo depende de cada pessoa.
 }catch(e){
 console.log("Erro:", e);
 }
+
+}
+
+function abrirWhatsSimulador(){
+
+let msg = "Vim do simulador ProSFF.\n\nVi os cenários e quero entender como começar minha primeira célula.\n\nPode me orientar?";
+
+window.open("https://wa.me/5522999231211?text=" + encodeURIComponent(msg));
 
 }
 
