@@ -241,16 +241,15 @@ console.log("Erro:", e);
 }
 function abrirWhatsSimulador(){
 
-let msg = `Vim do simulador ProSFF.
+let msg = "Vim do simulador ProSFF.\n\nVi os cenários e quero entender como começar minha primeira célula.\n\nPode me orientar?";
 
-Vi os cenários e quero entender como começar minha primeira célula.
-
-Pode me orientar?`;
-window.open(`https://wa.me/5522999231211?text=${encodeURIComponent(msg)}`);
+window.open("https://wa.me/5522999231211?text=" + encodeURIComponent(msg));
 
 }
 
-simular();
+window.onload = function(){
+    simular();
+};
 
 </script>
 
