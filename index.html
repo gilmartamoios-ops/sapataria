@@ -15,12 +15,6 @@ body { font-family: 'Montserrat', sans-serif; background-color: #080808; color: 
 .gold-text { color: #ffcc00; }
 .green-text { color: #00ff88; }
 input[type=range] { accent-color: #00ff88; }
-
-.ritmo-btn.active {
-    border-color: #00ff88;
-    background: rgba(0,255,136,0.1);
-    color: #00ff88;
-}
 </style>
 </head>
 
@@ -40,23 +34,31 @@ Simulador de construção por células
 </p>
 </header>
 
-<div class="prosff-card rounded-3xl p-4 mb-6 text-center border-dashed border-green-500/30">
+<div class="prosff-card rounded-3xl p-4 mb-6 border-dashed border-green-500/30">
 
-<label class="text-[10px] text-gray-500 uppercase block mb-1">
-Consumo mensal
+<div class="grid grid-cols-2 gap-3">
+
+<div>
+<label class="text-[10px] text-gray-500 uppercase block mb-1 text-center">
+Consumo
 </label>
 
 <input id="consumo" type="number" value="300"
 class="text-center bg-black border border-gray-700 rounded-xl p-2 w-full text-green-400 font-bold"
 oninput="simular()">
+</div>
 
-<label class="text-[10px] text-gray-500 uppercase block mt-4 mb-1">
-Duplicação por ciclo
+<div>
+<label class="text-[10px] text-gray-500 uppercase block mb-1 text-center">
+Duplicação
 </label>
 
 <input id="duplicacao" type="number" value="3"
 class="text-center bg-black border border-gray-700 rounded-xl p-2 w-full text-green-400 font-bold"
 oninput="simular()">
+</div>
+
+</div>
 
 </div>
 <div class="prosff-card rounded-3xl p-6 mb-6 text-center">
@@ -66,83 +68,70 @@ No ProSFF o crescimento acontece por duplicação de consumidores.<br><br>
 </p>
 </div>
 
-<div class="prosff-card rounded-3xl p-6 mb-6">
+<div class="flex items-center justify-between mb-4">
 
-<label class="block text-[10px] text-gray-500 uppercase mb-4 text-center">
-Simule o ritmo do seu negócio
-</label>
+<button onclick="voltar()" class="btn-back px-4 py-2 rounded-xl">←</button>
 
-<div class="grid grid-cols-3 gap-2 mb-6">
+<p class="text-sm font-bold">
+Mês <span id="mesAtual">1</span> de 12
+</p>
 
-<button onclick="setRitmo(60,this)" class="ritmo-btn p-3 rounded-xl border border-gray-800 text-[9px] font-bold">
-Conservador<br><span class="text-gray-500">2 meses</span>
-</button>
-
-<button onclick="setRitmo(30,this)" class="ritmo-btn active p-3 rounded-xl border border-gray-800 text-[9px] font-bold">
-Moderado<br><span class="text-gray-500">1 mês</span>
-</button>
-
-<button onclick="setRitmo(15,this)" class="ritmo-btn p-3 rounded-xl border border-gray-800 text-[9px] font-bold">
-Acelerado<br><span class="text-gray-500">15 dias</span>
-</button>
+<button onclick="avancar()" class="btn-back px-4 py-2 rounded-xl">→</button>
 
 </div>
 
-<label class="block text-[10px] text-gray-500 uppercase mb-2 text-center">
-Etapas: <span id="etapas-val" class="green-text">5</span>
-</label>
-
-<input type="range" id="etapas" min="1" max="8" value="5" class="w-full" oninput="simular()">
-
-</div>
-
-<div id="lista-etapas" class="flex gap-4 overflow-x-auto pb-4"></div>
+<div id="lista-etapas"></div>
 
 </div>
 <script>
 
-let ritmoDias = 30;
-let VALOR_FIXO = 300;
-let DUPLICACAO = 3;
+let mesAtual = 1;
 
-function setRitmo(dias, btn) {
-    ritmoDias = dias;
-    document.querySelectorAll('.ritmo-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    simular();
+function avancar(){
+if(mesAtual < 12){
+mesAtual++;
+simular();
+}
+}
+
+function voltar(){
+if(mesAtual > 1){
+mesAtual--;
+simular();
+}
 }
 
 function getStatus(e){
-    if(e===1) return "Começo consciente";
-    if(e===2) return "Primeira duplicação";
-    if(e===3) return "Estrutura em formação";
-    if(e===4) return "Rede consistente";
-    return "Escala em construção";
+if(e===1) return "Começo consciente";
+if(e===2) return "Primeira duplicação";
+if(e===3) return "Estrutura em formação";
+if(e===4) return "Rede consistente";
+return "Escala em construção";
 }
 
 function getAcao(e){
-    if(e===1) return "Convide 3 pessoas";
-    if(e===2) return "Ajude seus 3 a duplicarem";
-    if(e===3) return "Acompanhe sua rede";
-    return "Desenvolva novos líderes";
+if(e===1) return "Convide 3 pessoas";
+if(e===2) return "Ajude seus 3 a duplicarem";
+if(e===3) return "Acompanhe sua rede";
+return "Desenvolva novos líderes";
 }
 
 function simular(){
 
 try{
 
-VALOR_FIXO = parseFloat(document.getElementById('consumo').value) || 300;
-DUPLICACAO = parseFloat(document.getElementById('duplicacao').value) || 3;
+let VALOR_FIXO = parseFloat(document.getElementById('consumo').value) || 300;
+let DUPLICACAO = parseFloat(document.getElementById('duplicacao').value) || 3;
 
-let etapas = parseInt(document.getElementById('etapas').value);
-document.getElementById('etapas-val').innerText = etapas;
+document.getElementById('mesAtual').innerText = mesAtual;
 
 let container = document.getElementById('lista-etapas');
 container.innerHTML = '';
 
 let rede = 0;
 let ptsAnterior = 0;
-    const tiers = [
+
+const tiers = [
 { pts: 950, pin: 100, vme: 0.5 },
 { pts: 2450, pin: 200, vme: 0.5 },
 { pts: 7250, pin: 700, vme: 0.4 },
@@ -152,8 +141,7 @@ let ptsAnterior = 0;
 { pts: 122500, pin: 24000, vme: 0.4 },
 { pts: 247500, pin: 34000, vme: 0.35 }
 ];
-
-for(let e=1; e<=etapas; e++){
+ for(let e=1; e<=mesAtual; e++){
 
 let novos = Math.pow(DUPLICACAO,e);
 rede += novos;
@@ -182,46 +170,43 @@ pinBonus = t.pin;
 
 let total = unilevel + pinBonus;
 
-let tempoMeses = (e * ritmoDias) / 30;
-let tempoTexto = tempoMeses < 1 ? "15 dias" : tempoMeses.toFixed(1) + " meses";
+ptsAnterior = ptsMensal;
 
-container.innerHTML += `
-<div class="prosff-card min-w-[280px] rounded-2xl p-5 border-l-4 ${e===etapas?'border-l-green-500':'border-l-gray-800'}">
+if(e === mesAtual){
 
-<div class="mb-4 text-center bg-black/40 rounded-xl p-3 border border-green-500/20">
-<p class="text-[10px] text-gray-500 uppercase">Tempo de construção</p>
-<p class="text-xl font-black green-text">≈ ${tempoTexto}</p>
-</div>
+container.innerHTML = `
+<div class="prosff-card rounded-2xl p-6 border-l-4 border-l-green-500">
 
-<div class="flex justify-between">
+<p class="text-[10px] text-gray-500 uppercase mb-2">Mês ${mesAtual}</p>
 
-<div>
-<p class="text-[10px] text-gray-500 uppercase">Etapa ${e}</p>
-<h3 class="text-sm font-bold">${rede} consumidores</h3>
-<p class="text-[10px] text-green-400">${getStatus(e)}</p>
-</div>
+<h3 class="text-lg font-bold mb-2">${rede} consumidores</h3>
 
-<div class="text-right">
-<p class="text-[10px] text-gray-500 uppercase">Renda potencial</p>
-<p class="text-lg font-black green-text">R$ ${Math.floor(total).toLocaleString('pt-BR')}</p>
-</div>
+<p class="text-xs text-green-400 mb-4">${getStatus(e)}</p>
 
-</div>
+<p class="text-2xl font-black green-text mb-4">
+R$ ${Math.floor(total).toLocaleString('pt-BR')}
+</p>
 
-<div class="mt-3 border-t border-gray-800 pt-3">
-<p class="text-[10px] text-gray-400 uppercase">Próximo passo</p>
-<p class="text-xs">${getAcao(e)}</p>
-</div>
+<p class="text-xs text-gray-400 mb-4">
+${getAcao(e)}
+</p>
+
+<a href="https://wa.me/5522999231211?text=Vim%20do%20simulador%20ProSFF.%0A%0AVi%20o%20cen%C3%A1rio%20e%20quero%20come%C3%A7ar%20minha%20primeira%20c%C3%A9lula.%0A%0APode%20me%20orientar%3F"
+target="_blank"
+class="bg-green-500 text-black font-bold px-4 py-3 rounded-xl inline-block w-full">
+
+Quero começar minha primeira célula
+
+</a>
 
 </div>
 `;
-
-ptsAnterior = ptsMensal;
+}
 
 }
 
 }catch(e){
-console.log("Erro:", e);
+console.log(e);
 }
 
 }
@@ -231,4 +216,4 @@ simular();
 </script>
 
 </body>
-</html>
+</html>   
