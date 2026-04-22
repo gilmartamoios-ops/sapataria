@@ -39,13 +39,26 @@ Simulador de construção por células
 1 consumidor duplicando para 3 consumidores
 </p>
 </header>
-<div class="prosff-card rounded-3xl p-4 mb-6 text-center border-dashed border-green-500/30">
-<span class="text-[10px] text-gray-500 uppercase block mb-1">
-Consumo mínimo mensal
-</span>
-<span class="text-2xl font-black green-text">R$ 300</span>
-</div>
 
+<div class="prosff-card rounded-3xl p-4 mb-6 text-center border-dashed border-green-500/30">
+
+<label class="text-[10px] text-gray-500 uppercase block mb-1">
+Consumo mensal
+</label>
+
+<input id="consumo" type="number" value="300"
+class="text-center bg-black border border-gray-700 rounded-xl p-2 w-full text-green-400 font-bold"
+oninput="simular()">
+
+<label class="text-[10px] text-gray-500 uppercase block mt-4 mb-1">
+Duplicação por ciclo
+</label>
+
+<input id="duplicacao" type="number" value="3"
+class="text-center bg-black border border-gray-700 rounded-xl p-2 w-full text-green-400 font-bold"
+oninput="simular()">
+
+</div>
 <div class="prosff-card rounded-3xl p-6 mb-6 text-center">
 <p class="text-xs text-gray-400">
 No ProSFF o crescimento acontece por duplicação de consumidores.<br><br>
@@ -83,13 +96,14 @@ Etapas: <span id="etapas-val" class="green-text">5</span>
 
 </div>
 
-<div id="lista-etapas" class="space-y-4"></div>
+<div id="lista-etapas" class="flex gap-4 overflow-x-auto pb-4"></div>
 
 </div>
 <script>
 
 let ritmoDias = 30;
-const VALOR_FIXO = 300;
+let VALOR_FIXO = 300;
+let DUPLICACAO = 3;
 
 function setRitmo(dias, btn) {
     ritmoDias = dias;
@@ -117,6 +131,9 @@ function simular(){
 
 try{
 
+VALOR_FIXO = parseFloat(document.getElementById('consumo').value) || 300;
+DUPLICACAO = parseFloat(document.getElementById('duplicacao').value) || 3;
+
 let etapas = parseInt(document.getElementById('etapas').value);
 document.getElementById('etapas-val').innerText = etapas;
 
@@ -125,8 +142,7 @@ container.innerHTML = '';
 
 let rede = 0;
 let ptsAnterior = 0;
-
-const tiers = [
+    const tiers = [
 { pts: 950, pin: 100, vme: 0.5 },
 { pts: 2450, pin: 200, vme: 0.5 },
 { pts: 7250, pin: 700, vme: 0.4 },
@@ -139,28 +155,26 @@ const tiers = [
 
 for(let e=1; e<=etapas; e++){
 
-let novos = Math.pow(3,e);
+let novos = Math.pow(DUPLICACAO,e);
 rede += novos;
 
 let faturamento = rede * VALOR_FIXO;
 let ptsMensal = faturamento / 3;
-    // UNILEVEL
+
 let unilevel = 0;
 for(let g=1; g<=e; g++){
 let perc = (g<=2)?0.05:(g===3?0.09:0.04);
-unilevel += Math.pow(3,g)*VALOR_FIXO*perc;
+unilevel += Math.pow(DUPLICACAO,g)*VALOR_FIXO*perc;
 }
 
-// BONUS 3D
 let bonus3D = (ptsMensal > ptsAnterior && ptsMensal <= 27500)? ptsAnterior:0;
 let ptsCarreira = ptsMensal + bonus3D;
 
-// PIN
 let pinBonus = 0;
-let ptsPorLinha = ptsCarreira/3;
+let ptsPorLinha = ptsCarreira / DUPLICACAO;
 
 for(let t of tiers){
-let ptsValidos = 3*Math.min(ptsPorLinha, t.pts*t.vme);
+let ptsValidos = DUPLICACAO * Math.min(ptsPorLinha, t.pts*t.vme);
 if(ptsValidos >= t.pts){
 pinBonus = t.pin;
 }
@@ -168,16 +182,15 @@ pinBonus = t.pin;
 
 let total = unilevel + pinBonus;
 
-// TEMPO
 let tempoMeses = (e * ritmoDias) / 30;
 let tempoTexto = tempoMeses < 1 ? "15 dias" : tempoMeses.toFixed(1) + " meses";
 
 container.innerHTML += `
-<div class="prosff-card rounded-2xl p-5 border-l-4 ${e===etapas?'border-l-green-500':'border-l-gray-800'}">
+<div class="prosff-card min-w-[280px] rounded-2xl p-5 border-l-4 ${e===etapas?'border-l-green-500':'border-l-gray-800'}">
 
 <div class="mb-4 text-center bg-black/40 rounded-xl p-3 border border-green-500/20">
-    <p class="text-[10px] text-gray-500 uppercase">Tempo de construção</p>
-    <p class="text-xl font-black green-text">≈ ${tempoTexto}</p>
+<p class="text-[10px] text-gray-500 uppercase">Tempo de construção</p>
+<p class="text-xl font-black green-text">≈ ${tempoTexto}</p>
 </div>
 
 <div class="flex justify-between">
@@ -207,38 +220,9 @@ ptsAnterior = ptsMensal;
 
 }
 
-container.innerHTML += `
-<div class="prosff-card rounded-2xl p-6 text-center border border-green-500/30 mt-6">
-
-<p class="text-xs text-gray-400 uppercase mb-2">Próximo passo real</p>
-
-<h3 class="text-lg font-black green-text mb-3">
-Começar sua primeira célula
-</h3>
-
-<a href="https://wa.me/5522999231211?text=Vim%20do%20simulador%20ProSFF.%0A%0AVi%20os%20cen%C3%A1rios%20e%20quero%20entender%20como%20come%C3%A7ar%20minha%20primeira%20c%C3%A9lula.%0A%0APode%20me%20orientar%3F" target="_blank"
-class="bg-green-500 text-black font-bold px-4 py-2 rounded-xl inline-block">
-Quero começar minha primeira célula
-</a>
-
-<p class="text-[10px] text-gray-600 mt-4">
-Este simulador mostra cenários de construção. O ritmo depende de cada pessoa.
-</p>
-
-</div>
-`;
-
 }catch(e){
 console.log("Erro:", e);
 }
-
-}
-
-function abrirWhatsSimulador(){
-
-let msg = "Vim do simulador ProSFF.\n\nVi os cenários e quero entender como começar minha primeira célula.\n\nPode me orientar?";
-
-window.open("https://wa.me/5522999231211?text=" + encodeURIComponent(msg));
 
 }
 
