@@ -43,9 +43,9 @@ Simulador de construção por células
 Consumo
 </label>
 
-<input id="consumo" type="number" value="300"
+<input id="consumo" type="text" value="R$ 300,00"
 class="text-center bg-black border border-gray-700 rounded-xl p-2 w-full text-green-400 font-bold"
-oninput="simular()">
+oninput="formatarMoeda(this); simular()">
 </div>
 
 <div>
@@ -73,7 +73,7 @@ No ProSFF o crescimento acontece por duplicação de consumidores.<br><br>
 <button onclick="voltar()" class="btn-back px-4 py-2 rounded-xl">←</button>
 
 <p class="text-sm font-bold">
-Mês <span id="mesAtual">1</span> de 12
+Etapa <span id="mesAtual">1</span> de 12
 </p>
 
 <button onclick="avancar()" class="btn-back px-4 py-2 rounded-xl">→</button>
@@ -84,6 +84,14 @@ Mês <span id="mesAtual">1</span> de 12
 
 </div>
 <script>
+
+function formatarMoeda(campo){
+let valor = campo.value.replace(/\D/g,'');
+valor = (parseFloat(valor)/100).toFixed(2) + '';
+valor = valor.replace(".", ",");
+valor = valor.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+campo.value = "R$ " + valor;
+}
 
 let mesAtual = 1;
 
@@ -105,7 +113,7 @@ function getStatus(e){
 if(e===1) return "Começo consciente";
 if(e===2) return "Primeira duplicação";
 if(e===3) return "Estrutura em formação";
-if(e===4) return "Rede consistente";
+if(e===4) return "Renda construída";
 return "Escala em construção";
 }
 
@@ -120,7 +128,14 @@ function simular(){
 
 try{
 
-let VALOR_FIXO = parseFloat(document.getElementById('consumo').value) || 300;
+let VALOR_FIXO = document.getElementById('consumo').value
+.replace("R$","")
+.replace(/\./g,"")
+.replace(",",".")
+.trim();
+
+VALOR_FIXO = parseFloat(VALOR_FIXO) || 300;
+
 let DUPLICACAO = parseFloat(document.getElementById('duplicacao').value) || 3;
 
 document.getElementById('mesAtual').innerText = mesAtual;
@@ -130,8 +145,7 @@ container.innerHTML = '';
 
 let rede = 0;
 let ptsAnterior = 0;
-
-const tiers = [
+ const tiers = [
 { pts: 950, pin: 100, vme: 0.5 },
 { pts: 2450, pin: 200, vme: 0.5 },
 { pts: 7250, pin: 700, vme: 0.4 },
@@ -141,7 +155,8 @@ const tiers = [
 { pts: 122500, pin: 24000, vme: 0.4 },
 { pts: 247500, pin: 34000, vme: 0.35 }
 ];
- for(let e=1; e<=mesAtual; e++){
+
+for(let e=1; e<=mesAtual; e++){
 
 let novos = Math.pow(DUPLICACAO,e);
 rede += novos;
@@ -177,7 +192,7 @@ if(e === mesAtual){
 container.innerHTML = `
 <div class="prosff-card rounded-2xl p-6 border-l-4 border-l-green-500">
 
-<p class="text-[10px] text-gray-500 uppercase mb-2">Mês ${mesAtual}</p>
+<p class="text-[10px] text-gray-500 uppercase mb-2">Etapa ${mesAtual}</p>
 
 <h3 class="text-lg font-bold mb-2">${rede} consumidores</h3>
 
@@ -216,4 +231,4 @@ simular();
 </script>
 
 </body>
-</html>   
+</html>
