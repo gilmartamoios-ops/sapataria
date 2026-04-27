@@ -67,6 +67,7 @@ No ProSFF o crescimento acontece por duplicação de consumidores.<br><br>
 <strong class="text-white">Não é sobre tempo. É sobre construção.</strong>
 </p>
 </div>
+
 <div class="flex items-center justify-between mb-4">
 
 <button onclick="voltar()" class="btn-back px-4 py-2 rounded-xl">←</button>
@@ -84,7 +85,7 @@ Etapa <span id="mesAtual">1</span> de 12
 </div>
 <script>
 
-// 🔥 NOVO: capturar parâmetros do link
+// 🔥 NOVO: captura parâmetros do link
 function getParams(){
 const params = new URLSearchParams(window.location.search);
 return {
@@ -93,12 +94,10 @@ ref: params.get("ref") || "indicação direta"
 };
 }
 
-// 🔥 NOVO: voltar para APN com link correto
+// 🔥 NOVO: volta para APN direto na tela 12
 function voltarAPN(){
 let {numero, ref} = getParams();
-
-let url = "https://apndigital.vercel.app/?wpp="+numero+"&ref="+ref;
-
+let url = "https://apndigital.vercel.app/?wpp="+numero+"&ref="+ref+"&step=12";
 window.location.href = url;
 }
 
@@ -140,7 +139,6 @@ if(e===2) return "Ajude seus 3 a duplicarem";
 if(e===3) return "Acompanhe sua rede";
 return "Desenvolva novos líderes";
 }
-
 function simular(){
 
 try{
@@ -248,4 +246,4 @@ simular();
 </script>
 
 </body>
-</html>
+</html>  
