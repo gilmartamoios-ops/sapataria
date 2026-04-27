@@ -33,7 +33,6 @@ Simulador de construção por células
 1 consumidor duplicando para 3 consumidores
 </p>
 </header>
-
 <div class="prosff-card rounded-3xl p-4 mb-6 border-dashed border-green-500/30">
 
 <div class="grid grid-cols-2 gap-3">
@@ -61,13 +60,13 @@ oninput="simular()">
 </div>
 
 </div>
+
 <div class="prosff-card rounded-3xl p-6 mb-6 text-center">
 <p class="text-xs text-gray-400">
 No ProSFF o crescimento acontece por duplicação de consumidores.<br><br>
 <strong class="text-white">Não é sobre tempo. É sobre construção.</strong>
 </p>
 </div>
-
 <div class="flex items-center justify-between mb-4">
 
 <button onclick="voltar()" class="btn-back px-4 py-2 rounded-xl">←</button>
@@ -84,6 +83,24 @@ Etapa <span id="mesAtual">1</span> de 12
 
 </div>
 <script>
+
+// 🔥 NOVO: capturar parâmetros do link
+function getParams(){
+const params = new URLSearchParams(window.location.search);
+return {
+numero: params.get("wpp") || "5522999231211",
+ref: params.get("ref") || "indicação direta"
+};
+}
+
+// 🔥 NOVO: voltar para APN com link correto
+function voltarAPN(){
+let {numero, ref} = getParams();
+
+let url = "https://apndigital.vercel.app/?wpp="+numero+"&ref="+ref;
+
+window.location.href = url;
+}
 
 function formatarMoeda(campo){
 let valor = campo.value.replace(/\D/g,'');
@@ -145,7 +162,8 @@ container.innerHTML = '';
 
 let rede = 0;
 let ptsAnterior = 0;
- const tiers = [
+
+const tiers = [
 { pts: 950, pin: 100, vme: 0.5 },
 { pts: 2450, pin: 200, vme: 0.5 },
 { pts: 7250, pin: 700, vme: 0.4 },
@@ -206,13 +224,12 @@ R$ ${Math.floor(total).toLocaleString('pt-BR')}
 ${getAcao(e)}
 </p>
 
-<a href="https://wa.me/5522999231211?text=Vim%20do%20simulador%20ProSFF.%0A%0AVi%20o%20cen%C3%A1rio%20e%20quero%20come%C3%A7ar%20minha%20primeira%20c%C3%A9lula.%0A%0APode%20me%20orientar%3F"
-target="_blank"
+<button onclick="voltarAPN()"
 class="bg-green-500 text-black font-bold px-4 py-3 rounded-xl inline-block w-full">
 
-Quero começar minha primeira célula
+Voltar para apresentação
 
-</a>
+</button>
 
 </div>
 `;
